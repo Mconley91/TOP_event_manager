@@ -17,6 +17,19 @@ def phone_number_validator(phone)
     end
 end
 
+def get_registration_time(regdate)
+  am_or_pm = 'AM'
+  hours_24 = regdate.split(" ")[1].split(':')[0].to_i
+  if hours_24 > 12 
+    hours_12 = hours_24 - 12 
+    am_or_pm = 'PM'
+  else
+    hours_12 = hours_24
+  end
+  minutes = regdate.split(" ")[1].split(':')[1]
+  regtime = "#{hours_12}:#{minutes} #{am_or_pm}"
+end
+
 def legislators_by_zipcode(zip)
   civic_info = Google::Apis::CivicinfoV2::CivicInfoService.new
   civic_info.key = File.read('secretkey.txt').strip
@@ -40,9 +53,11 @@ def write_letters(contents)
     name = row[:first_name]
     zipcode = clean_zipcode(row[:zipcode])
     phone = phone_number_validator(row[:homephone])
+    regtime = get_registration_time(row[:regdate])
     legislators = legislators_by_zipcode(zipcode)
     form_letter = erb_template.result(binding) #turns erb file into html, with the variable values as they exist in scope at this time
     save_thank_you_letter(id, form_letter)
+    puts regtime
   end
 end
 
