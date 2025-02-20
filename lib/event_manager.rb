@@ -78,7 +78,7 @@ def write_letters(contents)
     # puts "NAME: #{name}", "ZIP: #{zipcode}", "PHONE: #{phone}", "REG_TIME: #{regtime}", " "
   end
   most_common_regtimes = get_most_common_regtimes(regtimes)
-  puts most_common_regtimes
+  # puts most_common_regtimes
 end
 
 def save_thank_you_letter(id,form_letter)
