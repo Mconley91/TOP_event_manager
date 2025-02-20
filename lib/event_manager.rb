@@ -41,7 +41,7 @@ def write_letters(contents)
     zipcode = clean_zipcode(row[:zipcode])
     phone = phone_number_validator(row[:homephone])
     legislators = legislators_by_zipcode(zipcode)
-    form_letter = erb_template.result(binding)
+    form_letter = erb_template.result(binding) #turns erb file into html, with the variable values as they exist in scope at this time
     save_thank_you_letter(id, form_letter)
   end
 end
