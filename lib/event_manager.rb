@@ -48,9 +48,10 @@ def get_most_common_regtimes(regtimes)
 end
 
 def get_regdays(regday)
-  year = regday.split(/\W+/)[0].to_i
-  month = regday.split(/\W+/)[2].to_i
-  day = regday.split(/\W+/)[1].to_i
+  split_regday = regday.split(/\W+/).map {|number| number.to_i}
+  year = split_regday[0]
+  month = split_regday[2]
+  day = split_regday[1]
   date = Date.new(year,month,day)
   date.strftime('%A')
 end
