@@ -91,7 +91,7 @@ def write_letters(contents)
     legislators = legislators_by_zipcode(zipcode)
     form_letter = erb_template.result(binding) #turns erb file into html, with the variable values as they exist in scope at this time
     save_thank_you_letter(id, form_letter)
-    # puts "NAME: #{name}", "ZIP: #{zipcode}", "PHONE: #{phone}", "REG_TIME: #{regtime}", " "
+    puts "NAME: #{name}", "ZIP: #{zipcode}", "PHONE: #{phone}", "REG TIME: #{regtime}", "REG DAY: #{regday}", " "
   end
   most_common_regtimes = get_most_common_regtimes(regtimes)
   most_common_regdays = get_most_common_regdays(regdays)
