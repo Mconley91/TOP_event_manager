@@ -17,7 +17,7 @@ def phone_number_validator(phone)
     end
 end
 
-def get_registration_time(regdate)
+def get_regtime(regdate)
   am_or_pm = 'AM'
   hours_24 = regdate.split(" ")[1].split(':')[0].to_i
   if hours_24 > 12 
@@ -47,6 +47,18 @@ def get_most_common_regtimes(regtimes)
   top_3_hours_array
 end
 
+def get_regdays(regday)
+  year = regday.split(/\W+/)[0].to_i
+  month = regday.split(/\W+/)[2].to_i
+  day = regday.split(/\W+/)[1].to_i
+  date = Date.new(year,month,day)
+  date.strftime('%A')
+end
+
+def get_most_common_regdays(regdays)
+  regdays.tally.to_a.sort {|a,b| a[1] <=> b[1]}.reverse[0..2].map {|entry| entry[0]}
+end
+
 def legislators_by_zipcode(zip)
   civic_info = Google::Apis::CivicinfoV2::CivicInfoService.new
   civic_info.key = File.read('secretkey.txt').strip
@@ -65,20 +77,26 @@ def write_letters(contents)
   template_letter = File.read('form_letter.erb')
   erb_template = ERB.new template_letter
   regtimes = []
+  regdays = []
   contents.each do |row|
     id = row[0]
     name = row[:first_name]
     zipcode = clean_zipcode(row[:zipcode])
     phone = phone_number_validator(row[:homephone])
-    regtime = get_registration_time(row[:regdate])
+    regtime = get_regtime(row[:regdate])
+    regday = get_regdays(row[:regdate])
     regtimes << regtime
+    regdays << regday
     legislators = legislators_by_zipcode(zipcode)
     form_letter = erb_template.result(binding) #turns erb file into html, with the variable values as they exist in scope at this time
     save_thank_you_letter(id, form_letter)
     # puts "NAME: #{name}", "ZIP: #{zipcode}", "PHONE: #{phone}", "REG_TIME: #{regtime}", " "
   end
   most_common_regtimes = get_most_common_regtimes(regtimes)
-  # puts most_common_regtimes
+  most_common_regdays = get_most_common_regdays(regdays)
+
+  puts "Top 3 registration hours are: #{most_common_regtimes[0]}, #{most_common_regtimes[1]}, #{most_common_regtimes[2]}"
+  puts "Top 3 registration days are: #{most_common_regdays[0]}, #{most_common_regdays[1]}, #{most_common_regdays[2]}"
 end
 
 def save_thank_you_letter(id,form_letter)
